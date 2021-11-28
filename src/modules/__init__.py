@@ -5,13 +5,23 @@ from src.modules.bottleneck import Bottleneck, BottleneckGenerator
 from src.modules.conv import Conv, ConvGenerator, FixedConvGenerator
 from src.modules.dwconv import DWConv, DWConvGenerator
 from src.modules.flatten import FlattenGenerator
-from src.modules.invertedresidualv2 import (InvertedResidualv2,
-                                            InvertedResidualv2Generator)
-from src.modules.invertedresidualv3 import (InvertedResidualv3,
-                                            InvertedResidualv3Generator)
+from src.modules.invertedresidualv2 import (
+    InvertedResidualv2,
+    InvertedResidualv2Generator,
+)
+from src.modules.invertedresidualv3 import (
+    InvertedResidualv3,
+    InvertedResidualv3Generator,
+)
 from src.modules.linear import Linear, LinearGenerator
-from src.modules.poolings import (AvgPoolGenerator, GlobalAvgPool,
-                                  GlobalAvgPoolGenerator, MaxPoolGenerator)
+from src.modules.poolings import (
+    AvgPoolGenerator,
+    GlobalAvgPool,
+    GlobalAvgPoolGenerator,
+    MaxPoolGenerator,
+)
+from src.modules.fire import Fire, FireGenerator
+from src.modules.dropout import Dropout, DropoutGenerator
 
 __all__ = [
     "ModuleGenerator",
@@ -23,6 +33,8 @@ __all__ = [
     "GlobalAvgPool",
     "InvertedResidualv2",
     "InvertedResidualv3",
+    "Fire",
+    "Dropout",
     "BottleneckGenerator",
     "FixedConvGenerator",
     "ConvGenerator",
@@ -34,4 +46,6 @@ __all__ = [
     "GlobalAvgPoolGenerator",
     "InvertedResidualv2Generator",
     "InvertedResidualv3Generator",
+    "FireGenerator",
+    "DropoutGenerator",
 ]

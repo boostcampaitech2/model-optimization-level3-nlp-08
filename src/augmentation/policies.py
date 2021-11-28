@@ -66,13 +66,13 @@ def randaugment_train(
 ) -> transforms.Compose:
     """Random augmentation policy for training CIFAR100."""
     operators = [
-        "Identity",
+        # "Identity",
         "AutoContrast",
-        "Equalize",
+        # "Equalize",
         "Rotate",
-        "Solarize",
-        "Color",
-        "Posterize",
+        # "Solarize",
+        # "Color",
+        # "Posterize",
         "Contrast",
         "Brightness",
         "Sharpness",

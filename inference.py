@@ -23,6 +23,7 @@ if torch.__version__ >= "1.8.1":
     from torch import profiler
 else:
     from torch.autograd import profiler
+from src.pretrained_model import CustomSqueezeNet
 
 CLASSES = [
     "Metal",
@@ -58,8 +59,7 @@ def get_dataloader(img_root: str, data_config: str) -> DataLoader:
     )
     # Transformation for test
     transform_test = getattr(
-        __import__("src.augmentation.policies", fromlist=[""]),
-        data_config["AUG_TEST"],
+        __import__("src.augmentation.policies", fromlist=[""]), data_config["AUG_TEST"],
     )(dataset=data_config["DATASET"], img_size=data_config["IMG_SIZE"])
 
     dataset = CustomImageFolder(root=img_root, transform=transform_test)
@@ -144,19 +144,33 @@ def inference(model, dataloader, dst_path: str, t0: float) -> None:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Submit.")
     parser.add_argument(
-        "--dst", type=str, help="destination path for submit",
-        default=os.environ.get('SM_OUTPUT_DATA_DIR')
+        "--dst",
+        type=str,
+        help="destination path for submit",
+        default=os.environ.get("SM_OUTPUT_DATA_DIR"),
     )
-    parser.add_argument("--model_dir", type=str, help="Saved model root directory which includes 'best.pt', 'data.yml', and, 'model.yml'", default='/opt/ml/code/exp/latest')
-    parser.add_argument("--weight_name", type=str, help="Model weight file name. (best.pt, best.ts, ...)", default="best.pt")
+    parser.add_argument(
+        "--model_dir",
+        type=str,
+        help="Saved model root directory which includes 'best.pt', 'data.yml', and, 'model.yml'",
+        default="/opt/ml/code/exp/latest",
+    )
+    parser.add_argument(
+        "--weight_name",
+        type=str,
+        help="Model weight file name. (best.pt, best.ts, ...)",
+        default="best.pt",
+    )
     parser.add_argument(
         "--img_root",
         type=str,
         help="image folder root. e.g) 'data/test'",
-        default='/opt/ml/data/test'
+        default="/opt/ml/data/test",
     )
     args = parser.parse_args()
-    assert args.model_dir != '' and args.img_root != '', "'--model_dir' and '--img_root' must be provided."
+    assert (
+        args.model_dir != "" and args.img_root != ""
+    ), "'--model_dir' and '--img_root' must be provided."
 
     args.weight = os.path.join(args.model_dir, args.weight_name)
     args.model_config = os.path.join(args.model_dir, "model.yml")
@@ -172,11 +186,8 @@ if __name__ == "__main__":
     if args.weight.endswith("ts"):
         model = torch.jit.load(args.weight)
     else:
-        model_instance = Model(args.model_config, verbose=True)
-        model_instance.model.load_state_dict(
-            torch.load(args.weight, map_location=torch.device("cpu"))
-        )
-        model = model_instance.model
+        model = CustomSqueezeNet()
+        model.load_state_dict(torch.load(args.weight, map_location=torch.device("cpu")))
 
     # inference
     inference(model, dataloader, args.dst, t0)
